@@ -42,7 +42,7 @@ schema.methods.checkPassword = function (password) {
     return this.encryptPassword(password) === this.hashedPassword;
 };
 
-schema.statics.authorize = function (username, password, callback) {
+schema.statics.authorize = function (username, password, type, callback) {
     var User = this;
 
     async.waterfall([
@@ -60,7 +60,7 @@ schema.statics.authorize = function (username, password, callback) {
                 user = new User({
                     username: username,
                     password: password,
-                    type: 'user'
+                    type: type
                 });
 
                 user.save(function (err) {

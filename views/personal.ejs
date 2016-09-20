@@ -1,4 +1,5 @@
 <% layout('layout/page'); %>
+<% block('title', user.get('type')); %>
 
 <ul>
     <li>Name: <%= user.get('username') %></li>
