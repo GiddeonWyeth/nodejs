@@ -7,7 +7,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/login', require('./login').get);
-// // router.post('/login', require('./login').post);
-// router.get('/users', require('./users').get);
+router.post('/login', require('./login').post);
+router.get('/personal', require('./personal').get);
 
 module.exports = router;

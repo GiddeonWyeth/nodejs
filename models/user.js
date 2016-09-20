@@ -1,4 +1,5 @@
 var crypto = require('crypto');
+var async = require('async');
 
 var mongoose = require('../libs/mongoose'),
     Schema = mongoose.Schema;
@@ -39,6 +40,36 @@ schema.virtual('password')
 
 schema.methods.checkPassword = function (password) {
     return this.encryptPassword(password) === this.hashedPassword;
+};
+
+schema.statics.authorize = function (username, password, callback) {
+    var User = this;
+
+    async.waterfall([
+        function (callback) {
+            User.findOne({username: username}, callback);
+        },
+        function (user, callback) {
+            if (user) {
+                if (user.checkPassword(password)) {
+                    callback(null, user);
+                } else {
+                    next(err);
+                }
+            } else {
+                user = new User({
+                    username: username,
+                    password: password,
+                    type: 'user'
+                });
+
+                user.save(function (err) {
+                    if (err) return next(err);
+                    callback(null, user)
+                });
+            }
+        }
+    ], callback);
 };
 
 exports.User = mongoose.model('User', schema);
